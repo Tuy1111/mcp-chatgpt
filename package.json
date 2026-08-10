@@ -1,0 +1,19 @@
+{
+  "name": "chatgpt-code-mcp-sample",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Minimal workspace for testing ChatGPT Code MCP",
+  "type": "module",
+  "scripts": {
+    "build": "tsc --noEmit",
+    "test": "node --import tsx --test test/*.test.ts"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "tsx": "^4.17.0",
+    "typescript": "^5.5.0"
+  },
+  "engines": {
+    "node": ">=22.0.0"
+  }
+}

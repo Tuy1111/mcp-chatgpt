@@ -1,0 +1,21 @@
+{
+  "name": "chatgpt-code-mcp-sample",
+  "allowedPaths": [
+    "src/**",
+    "test/**",
+    "package.json",
+    "tsconfig.json",
+    "README.md"
+  ],
+  "blockedPaths": [
+    ".env*",
+    "secrets/**",
+    "**/*.key",
+    "**/*.pem",
+    "node_modules/**"
+  ],
+  "commands": {
+    "test": "pnpm test",
+    "build": "pnpm build"
+  }
+}
