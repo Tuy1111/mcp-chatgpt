@@ -1,0 +1,55 @@
+services:
+  mcp:
+    build: .
+    restart: unless-stopped
+    environment:
+      # Required: binding 0.0.0.0 without it is refused at startup.
+      MCP_AUTH_TOKEN: ${MCP_AUTH_TOKEN:?set MCP_AUTH_TOKEN, e.g. openssl rand -hex 32}
+      # The `deploy` tool is off unless this is exactly "true".
+      DEPLOY_ENABLED: ${DEPLOY_ENABLED:-false}
+      # Fixed: container path the checkout is bound to below. Host side is
+      # DEPLOY_HOST_REPO_DIR.
+      DEPLOY_REPO_DIR: /repo
+      DEPLOY_COMPOSE_FILE: ${DEPLOY_COMPOSE_FILE:-}
+      DEPLOY_SERVICES: ${DEPLOY_SERVICES:-mcp}
+      DEPLOY_TIMEOUT_MS: ${DEPLOY_TIMEOUT_MS:-900000}
+    volumes:
+      # The workspace must contain a .code-agent.json. Drop `:ro` only if you
+      # want the agent to be able to write code.
+      - ${WORKSPACE_DIR:?set WORKSPACE_DIR to the directory holding your code}:/workspace:ro
+      # Below here: only needed when DEPLOY_ENABLED=true. Comment both out
+      # otherwise.
+      #
+      # The checkout `deploy` pulls and rebuilds — normally the directory
+      # containing this compose.yaml.
+      - ${DEPLOY_HOST_REPO_DIR:-.}:/repo
+      # SECURITY: a container with the Docker socket has root-equivalent
+      # control of the host. Mount it only if you accept that anyone holding
+      # MCP_AUTH_TOKEN can redeploy this machine.
+      - /var/run/docker.sock:/var/run/docker.sock
+    # The image runs as `node`; the host's docker group id must be granted
+    # explicitly. Find it with: getent group docker | cut -d: -f3
+    group_add:
+      - ${DOCKER_GID:-999}
+    # Loopback-only: TLS termination is the reverse proxy's job, and an MCP
+    # endpoint on a public port is a remote shell with extra steps.
+    ports:
+      - '127.0.0.1:8787:8787'
+
+  # Terminates TLS and gets a real certificate. Both ChatGPT and Hermes connect
+  # to remote MCP servers over HTTPS only.
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    depends_on: [mcp]
+    ports:
+      - '80:80'
+      - '443:443'
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+
+volumes:
+  caddy_data:
+  caddy_config:

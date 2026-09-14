@@ -5,7 +5,8 @@
     "test/**",
     "package.json",
     "tsconfig.json",
-    "README.md"
+    "README.md",
+    ".code-agent.json"
   ],
   "blockedPaths": [
     ".env*",
@@ -16,6 +17,10 @@
   ],
   "commands": {
     "test": "pnpm test",
-    "build": "pnpm build"
-  }
+    "build": "pnpm build",
+    "typecheck": "pnpm typecheck"
+  },
+  "maxFileBytes": 512000,
+  "writable": true,
+  "commandTimeoutMs": 120000
 }

@@ -1,0 +1,19 @@
+# Replace with the hostname ChatGPT will connect to. Caddy provisions the
+# certificate automatically; ChatGPT rejects plain HTTP and self-signed certs.
+mcp.example.com {
+	reverse_proxy mcp:8787 {
+		# Streamable HTTP keeps a long-lived SSE stream open. Without this,
+		# Caddy buffers the response and the MCP session appears to hang.
+		flush_interval -1
+	}
+
+	header {
+		Strict-Transport-Security "max-age=31536000"
+		-Server
+	}
+
+	log {
+		output stdout
+		format console
+	}
+}

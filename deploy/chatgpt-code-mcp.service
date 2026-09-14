@@ -1,0 +1,43 @@
+# MCP Streamable HTTP server, for installs that do not use Docker.
+#
+# Install:
+#   1. Build once:   pnpm install --frozen-lockfile && pnpm build
+#   2. Copy this file to /etc/systemd/system/chatgpt-code-mcp.service
+#   3. Replace every PLACEHOLDER below.
+#   4. Create /etc/chatgpt-code-mcp.env from .env.example
+#      (chown root:root, chmod 600 — it holds MCP_AUTH_TOKEN).
+#   5. systemctl daemon-reload && systemctl enable --now chatgpt-code-mcp
+[Unit]
+Description=chatgpt-code-mcp HTTP server
+Documentation=https://github.com/PLACEHOLDER/MCP-CHATGPT-TO-WEB
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+# PLACEHOLDER: unprivileged account that owns the checkout and the workspace.
+User=mcp
+Group=mcp
+# PLACEHOLDER: absolute path of the built checkout (the one containing dist/).
+WorkingDirectory=/srv/chatgpt-code-mcp
+EnvironmentFile=/etc/chatgpt-code-mcp.env
+# PLACEHOLDER: workspace root; must contain a .code-agent.json.
+ExecStart=/usr/bin/node dist/bin/http.js --workspace-root /srv/code
+Restart=always
+RestartSec=5
+
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full
+ProtectHome=true
+ProtectKernelTunables=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+# The sandbox allows writes into the workspace, so it must stay writable.
+ReadWritePaths=/srv/code
+
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target
