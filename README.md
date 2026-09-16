@@ -130,7 +130,22 @@ Nhắn thử:
 Đọc src/greeting.ts rồi sửa greet trả về "Hello, <name>! Welcome to MCP.", chạy test, xong thì deploy.
 ```
 
-## Kết nối ChatGPT
+## Điều khiển code trên máy Windows qua gateway OAuth
+
+Nếu mục tiêu là **ChatGPT → gateway VPS → code trên Windows**, dùng agent trong [`windows-agent/`](windows-agent/README.md). Agent chủ động mở WebSocket outbound tới gateway nên không cần mở cổng trên máy Windows.
+
+```powershell
+git clone https://github.com/Tuy1111/mcp-chatgpt.git
+cd mcp-chatgpt\windows-agent
+npm install
+node agent.mjs --workspace-root "D:\DTH-SW\yms"
+```
+
+Lần đầu agent sẽ in URL pairing. Mở URL, nhập Owner password của gateway rồi bấm **Approve**. Khi thấy `Connected to gateway ... Waiting for ChatGPT requests.`, ChatGPT có thể gọi `machines_list`, sau đó `workspaces_list` với `machine_id` vừa nhận được.
+
+> Copy `windows-agent/code-agent.json.example` thành `.code-agent.json` ở gốc dự án Windows và sửa `allowedPaths`/`commands` cho đúng dự án. Token pairing nằm trong `windows-agent/.agent-state.json`; file này không được commit.
+
+## Kết nối ChatGPT trực tiếp tới server standalone
 
 ChatGPT **chỉ nhận remote MCP qua HTTPS**, nên phải có TLS (xem phần VPS bên dưới hoặc tunnel):
 

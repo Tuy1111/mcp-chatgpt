@@ -1,0 +1,26 @@
+{
+  "name": "yms",
+  "allowedPaths": [
+    "src/main/java/**",
+    "src/main/resources/**",
+    "src/main/frontend/**",
+    "src/test/**",
+    "docs/**",
+    "*.md",
+    "build.gradle",
+    "settings.gradle",
+    "gradle.properties",
+    "package.json",
+    "tsconfig.json",
+    "vite.config.ts",
+    ".env.example"
+  ],
+  "blockedPaths": [],
+  "commands": {
+    "test": "gradlew.bat test",
+    "build": "gradlew.bat build",
+    "compile": "gradlew.bat compileJava"
+  },
+  "maxFileBytes": 512000,
+  "writable": true
+}

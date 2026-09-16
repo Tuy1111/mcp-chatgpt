@@ -1,0 +1,14 @@
+{
+  "name": "win-code-agent",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Local agent that connects your machine's code folders to the chatgpt-code-mcp gateway",
+  "bin": { "win-code-agent": "agent.mjs" },
+  "scripts": {
+    "start": "node agent.mjs"
+  },
+  "dependencies": {
+    "ws": "^8.18.0"
+  }
+}
